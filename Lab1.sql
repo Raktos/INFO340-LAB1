@@ -23,16 +23,26 @@ FROM tblPRODUCT p
 WHERE pt.ProductTypeName = 'Book' OR pt.ProductTypeName like '%Amplifier';
 
 --4) Write a query that returns the number of Orders placed in Oregon, New Mexico and Montana (broken out by State) between May 2001 and July 2005 (inclusive).
---SELCT
+SELECT c.CustState, COUNT(o.OrderID) AS totalOrders
+FROM tblOrder o
+	JOIN tblCUSTOMER c
+		ON c.CustID = o.CustID
+WHERE 
+	o.OrderDate BETWEEN '2001-05-01' and '2005-07-31' AND
+		(c.CustState LIKE 'Oregon%' OR
+		c.CustState LIKE 'New Mexico%' OR
+		c.CustState LIKE 'Montana%')
+GROUP BY c.custState;
 
 --5) Write a query that returns the Top 25 customers from Texas based on lifetime dollars spent with GuitarShop. (hint: this includes a GROUP BY as well as an ORDER BY)
-SELECT c.CustFname, c.CustFname, SUM(li.Qty * pv.Price) AS TotalSpent
+SELECT TOP 25 c.CustFname, c.CustLname, SUM(li.Qty * pv.Price) AS TotalSpent
 FROM tblCUSTOMER c
 	JOIN tblORDER o
 		ON c.CustID = o.CustID
 	JOIN tblLINE_ITEM li
 		ON o.OrderID = li.OrderID
 	JOIN tblPRODUCT_VENDOR pv
-		ON li.ProductVendorID = li.ProductVendorID
-GROUP BY c.CustLname, c.CustFname
-ORDER BY SUM(li.Qty * pv.Price), c.CustLname, c.CustFname DESC
+		ON li.ProductVendorID = pv.ProductVendorID
+WHERE c.CustState LIKE 'Texas%'
+GROUP BY c.CustID, c.CustFname, c.CustLname
+ORDER BY SUM(li.Qty * pv.Price) DESC, c.CustLname, c.CustFname;
