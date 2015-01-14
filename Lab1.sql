@@ -20,7 +20,7 @@ FROM tblPRODUCT p
 		ON p.ProductID = pv.ProductID
 	JOIN tblVendor v
 		ON pv.VendorID = v.VendorID
-WHERE pt.ProductTypeName = 'Book' OR pt.ProductTypeName like '%Amplifier';
+WHERE pt.ProductTypeName LIKE 'Book' OR pt.ProductTypeName LIKE '%Amplifier%';
 
 --4) Write a query that returns the number of Orders placed in Oregon, New Mexico and Montana (broken out by State) between May 2001 and July 2005 (inclusive).
 SELECT c.CustState, COUNT(o.OrderID) AS totalOrders
